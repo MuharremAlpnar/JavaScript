@@ -1,0 +1,40 @@
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body{
+    width: 100vw;
+    height: 100vh;
+    overflow-y: scroll;
+    #maincontainer{   
+        width: 100%;
+        height: 100%;
+
+        #card{
+
+            #sure-container{
+                border: aliceblue solid;
+                margin: 0;
+
+                #buttonlar{
+                    
+                    #oyna{
+                        width: 65px;
+                        height: 65px;    
+                        i{
+                            position: relative;
+                            left: 2px;
+                        }
+                    }
+                }
+              
+            }
+        }
+    }
+
+} 
+
+
+
