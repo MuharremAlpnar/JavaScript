@@ -65,37 +65,154 @@ class MusicPlayer {
 
 
 
+const resim = document.getElementById("resim");
+const sarkiIsmi = document.getElementById("sarki-ismi");
+const sarkici = document.getElementById("soyleyen");
+const sarki = document.getElementById("sarki");
+const oynaDur = document.querySelector("#buttonlar button:nth-child(2)")
+const geri = document.querySelector("#buttonlar button:nth-child(1)")
+const ileri = document.querySelector("#buttonlar button:nth-child(3)")
+let simdi = document.querySelector("#simdi")
+let toplamSure = document.querySelector("#toplam-sure")
+const rangeDeger = document.querySelector("#customRange1")
+const btnses = document.getElementById("btnses")
+const rangeDeger2 = document.getElementById("customRange2")
+
+
+
+let player = new MusicPlayer(musicList)
+
+
+
+window.addEventListener("load",()=>{
+    let music = player.getMusic();
+    load(music)
+    
+    
+})
+
+function load(music) {
+    resim.src = "img/" + music.img;
+    sarkiIsmi.textContent = music.getName();
+    sarkici.textContent = music.singer;
+    sarki.src = "mp3/" + music.file;    
+}
 
 
 
 
+let oynuyomu = false;
+oynaDur.addEventListener("click",()=>{
 
-const player = new MusicPlayer(musicList);
-//MusicPlayer calsından parametreleri Music clasından oluşmuş musiclist dizisini al ve player adında bir obje oluştur.
-//mucislist dizisindeki elemanlar music classından oluşmuştur. bu diziyi Musicpalyer classına yollayıp musiclist dizisi için kullanacağım metodlar tanımlıyorum
-//böylelikle musiclist dizisi içindeki elemanlar arası gezinebiliyorum. gezinebilmek için ayrıca dizi elemanlarına erişmek için index değişkeni oluşturuyorum
+    if (oynuyomu==false) {
+        oynat();
+    } else {
+        dur();
+    }
+    
+})
+function oynat() {
+    oynaDur.innerHTML=`<i class="fa-solid fa-pause fa-2xl"></i>`
+    oynuyomu = true;
+    sarki.play();
+}
+function dur() {
+    oynaDur.innerHTML=`<i class="fa-solid fa-play fa-2xl"></i>`
+    oynuyomu = false;
+    sarki.pause();
+}
 
 
 
-let music = player.getMusic(); //kullanılan metod Music classından bir nesne olduğundan Music classındaki bir metot music değişkeni ile erişilebilir
-console.log(music.getName());
+ileri.addEventListener("click",()=>{
+    next()   
+})
 
-player.next();
-// music = player.getMusic();
-// console.log(music.getName());
+function next() {
+    player.next()
+    let music = player.getMusic()
+    load(music);
+    oynat()
+}
 
-// player.previous();
-// music = player.getMusic();
-// console.log(music.getName());
 
-// player.next();
-// music = player.getMusic();
-// console.log(music.getName());
+geri.addEventListener("click",()=>{
+    back()
+})
 
-// player.next();
-// music = player.getMusic();
-// console.log(music.getName());
+function back() {
+    player.previous()
+    let music = player.getMusic()
+    load(music);
+    oynat()
+}
 
-// player.next();
-// music = player.getMusic();
-// console.log(music.getName());
+
+sarki.addEventListener("loadedmetadata",()=>{
+    rangeDeger.max = Math.floor(sarki.duration)
+    toplamSure.textContent = zamanhesapla(sarki.duration);
+})
+function zamanhesapla(saniye) {
+    const dk = Math.floor(saniye/60);
+    const sn = Math.floor(saniye % 60);
+    let kalansn = 0;
+    if (sn<10) {
+        kalansn = `0${sn}`
+    } else {
+        kalansn = `${sn}`;
+    }
+    const sonuc = `${dk}:${kalansn}`;
+    return sonuc;
+   
+}
+
+
+
+sarki.addEventListener("timeupdate",()=>{
+    rangeDeger.value = Math.floor(sarki.currentTime)
+    simdi.textContent = zamanhesapla(sarki.currentTime)
+})
+  
+rangeDeger.addEventListener("input",()=>{
+    simdi.innerHTML = zamanhesapla(rangeDeger.value);
+    sarki.currentTime = rangeDeger.value
+})
+
+
+btnses.addEventListener("click",()=>{
+    sesbtndegis()
+})
+
+let sesacikmi = true;
+function sesbtndegis(){
+
+    if (sesacikmi==true) {
+        seskis();
+    } else {
+        sesac();
+    }
+}
+
+function seskis() {
+    btnses.innerHTML=`<i class="fa-solid fa-volume-xmark"></i>` 
+    sarki.volume = 0;
+    sesacikmi=false
+}
+function sesac() {
+    btnses.innerHTML=`<i class="fa-solid fa-volume-high"></i>`  
+    sesacikmi=true
+    sarki.volume = 1;
+}
+
+
+
+
+rangeDeger2.addEventListener('input', function() {
+    // Range inputundaki değere göre ses seviyesini ayarlayın
+    sarki.volume = rangeDeger2.value;
+    if (sarki.volume==0) {
+        btnses.innerHTML=`<i class="fa-solid fa-volume-xmark"></i>` 
+    } else {
+        btnses.innerHTML=`<i class="fa-solid fa-volume-high"></i>`
+    }
+  });
